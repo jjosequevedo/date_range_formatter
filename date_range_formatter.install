@@ -1,0 +1,49 @@
+<?php
+
+use Drupal\views\Entity\View;
+use Drupal\Core\Entity\Entity\EntityViewDisplay;
+/**
+ * @file
+ * Provides updates for Date Range Formatter module.
+ */
+/**
+ * Remove single and single_all_day settings from view and entity_view_display
+ * configurations.
+ */
+function date_range_formatter_update_8703() {
+
+  $dependents = \Drupal::service('config.manager')->findConfigEntityDependenciesAsEntities('module', ['date_range_formatter']);
+
+  foreach ($dependents as $dependent) {
+    if ($dependent instanceof View) {
+      $displays = $dependent->get('display');
+
+      foreach ($displays as $name => $display) {
+        if (array_key_exists('display_options', $display) && array_key_exists('fields', $display['display_options'])) {
+          foreach ($display['display_options']['fields'] as $field_name => $field) {
+            if (!empty($field['type']) && $field['type'] == 'date_range_without_time') {
+              unset($field['settings']['single']);
+              unset($field['settings']['single_all_day']);
+              $displays[$name]['display_options']['fields'][$field_name] = $field;
+              $dependent->set('displays', $displays);
+              $dependent->save();
+            }
+          }
+        }
+      }
+    }
+
+    if ($dependent instanceof EntityViewDisplay) {
+      $content = $dependent->get('content');
+      foreach ($content as $field_name => $field) {
+        if (!empty($field['type']) && $field['type'] == 'date_range_without_time') {
+          unset($field['settings']['single']);
+          unset($field['settings']['single_all_day']);
+          $content[$field_name] = $field;
+          $dependent->set('content', $content);
+          $dependent->save(TRUE);
+        }
+      }
+    }
+  }
+}
