@@ -4,4 +4,4 @@ description: 'Formats date ranges.'
 package: Date/Time
 core_version_requirement: ^8 || ^9 || ^10 || ^11
 dependencies:
-  - datetime_range
+  - datetime_range:datetime_range
