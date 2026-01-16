@@ -3,6 +3,7 @@
     "type": "drupal-module",
     "description": "This module is particularly useful for websites that display events, schedules, or any content with a start and end date.",
     "license": "GPL-2.0-or-later",
-    "minimum-stability": "dev"
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }
 
